@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-TFBXRDL2');</script>
+<!-- End Google Tag Manager -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Products - Simple Shopping Site</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 1rem; /* rounded-xl */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
+            padding: 2rem;
+            width: 100%;
+            max-width: 960px;
+        }
+        .product-card {
+            background-color: #f9fafb;
+            border-radius: 0.75rem; /* rounded-lg */
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); /* shadow-sm */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .product-image {
+            border-radius: 0.5rem; /* rounded-md */
+            object-fit: cover;
+            width: 100%;
+            height: 180px;
+            margin-bottom: 1rem;
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem; /* rounded-md */
+            font-weight: 600; /* font-semibold */
+            transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        .btn-primary {
+            background-color: #4f46e5; /* indigo-600 */
+            color: #ffffff;
+        }
+        .btn-primary:hover {
+            background-color: #4338ca; /* indigo-700 */
+            transform: translateY(-1px);
+        }
+        .btn-secondary {
+            background-color: #6b7280; /* gray-500 */
+            color: #ffffff;
+        }
+        .btn-secondary:hover {
+            background-color: #4b5563; /* gray-600 */
+            transform: translateY(-1px);
+        }
+        @media (max-width: 768px) {
+            .grid-cols-3 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+  <!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TFBXRDL2"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+    <div class="container">
+        <h1 class="text-4xl font-bold text-center text-gray-800 mb-8">Our Products</h1>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8" id="product-list">
+            <!-- Products will be loaded here by JavaScript -->
+        </div>
+        <div class="text-center">
+            <button class="btn btn-secondary" onclick="window.location.href='checkout.html'">
+                Proceed to Checkout (<span id="cart-item-count">0</span> items)
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Function to get a placeholder image URL
+        function getPlaceholderImage(width, height, text) {
+            return `https://placehold.co/${width}x%${height}/E0E7FF/4F46E5?text=${encodeURIComponent(text)}`;
+        }
+
+        // --- Data Model ---
+        const products = [
+            { id: 1, name: 'Stylish T-Shirt', price: 25.00, image: getPlaceholderImage(300, 180, 'T-Shirt') },
+            { id: 2, name: 'Designer Jeans', price: 55.00, image: getPlaceholderImage(300, 180, 'Jeans') },
+            { id: 3, name: 'Smart Watch', price: 120.00, image: getPlaceholderImage(300, 180, 'Smart Watch') },
+            { id: 4, name: 'Wireless Headphones', price: 80.00, image: getPlaceholderImage(300, 180, 'Headphones') },
+            { id: 5, name: 'Ergonomic Mouse', price: 30.00, image: getPlaceholderImage(300, 180, 'Mouse') },
+            { id: 6, name: 'Mechanical Keyboard', price: 90.00, image: getPlaceholderImage(300, 180, 'Keyboard') },
+        ];
+
+        let cart = JSON.parse(sessionStorage.getItem('cart')) || [];
+
+        /**
+         * Renders the product listing and updates cart count.
+         */
+        function renderProductPage() {
+            const productListDiv = document.getElementById('product-list');
+            productListDiv.innerHTML = `
+                ${products.map(product => `
+                    <div class="product-card">
+                        <img src="${product.image}" alt="${product.name}" class="product-image">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-2">${product.name}</h2>
+                        <p class="text-gray-700 text-lg mb-4">$${product.price.toFixed(2)}</p>
+                        <button class="btn btn-primary add-to-cart-btn" data-product-id="${product.id}">
+                            Add to Cart
+                        </button>
+                    </div>
+                `).join('')}
+            `;
+
+            // Update cart item count display
+            updateCartCountDisplay();
+
+            // Add event listeners for "Add to Cart" buttons
+            document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const productId = parseInt(event.target.dataset.productId);
+                    addToCart(productId);
+                });
+            });
+        }
+
+        /**
+         * Adds a product to the cart and updates session storage.
+         * @param {number} productId - The ID of the product to add.
+         */
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            if (product) {
+                cart.push(product);
+                sessionStorage.setItem('cart', JSON.stringify(cart));
+                updateCartCountDisplay();
+                console.log(`${product.name} added to cart!`);
+            }
+        }
+
+        /**
+         * Updates the displayed number of items in the cart.
+         */
+        function updateCartCountDisplay() {
+            const cartItemCountSpan = document.getElementById('cart-item-count');
+            if (cartItemCountSpan) {
+                cartItemCountSpan.textContent = cart.length;
+            }
+        }
+
+        // Initial page load
+        document.addEventListener('DOMContentLoaded', renderProductPage);
+    </script>
+</body>
+</html>
